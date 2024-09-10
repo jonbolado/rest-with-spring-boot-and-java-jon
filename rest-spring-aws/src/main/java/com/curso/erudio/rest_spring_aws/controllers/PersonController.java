@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+//@CrossOrigin
 @RestController
 @RequestMapping("api/person/v1")
 @Tag(name = "Pessoas", description = "Endpoints for managing people")
@@ -27,6 +28,7 @@ public class PersonController {
         return service.findAll();
     }
 
+    //@CrossOrigin(origins = "http://localhost:8080")
     @GetMapping(value = "/{id}", produces = {
             MediaType.APPLICATION_JSON,
             MediaType.APPLICATION_XML,
@@ -36,6 +38,7 @@ public class PersonController {
         return service.findById(Long.valueOf(id));
     }
 
+    //@CrossOrigin(origins = {"http://localhost:8080", "https://localhost:8080"})
     @PostMapping(produces = {
             MediaType.APPLICATION_JSON,
             MediaType.APPLICATION_XML,

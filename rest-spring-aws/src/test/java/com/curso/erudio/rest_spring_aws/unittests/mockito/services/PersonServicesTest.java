@@ -89,6 +89,28 @@ public class PersonServicesTest {
     }
 
     @Test
+    void testUpdate() {
+        Person pessoa = mockPerson.mockEntity(1);
+        PersonVO vo = mockPerson.mockVO(1);
+        vo.setAddress("alterado");
+        vo.setGender("alterado");
+        vo.setLastName("alterado");
+        vo.setFirstName("alterado");
+
+        when(repository.findById(1L)).thenReturn(Optional.of(pessoa));
+        when(repository.save(pessoa)).thenReturn(Mapper.parseObject(vo, Person.class));
+
+        var atualizado = service.update(vo);
+
+        assertNotNull(atualizado);
+        assertEquals(1L, atualizado.getId());
+        assertEquals("alterado", atualizado.getFirstName());
+        assertEquals("alterado", atualizado.getGender());
+        assertEquals("alterado", atualizado.getLastName());
+        assertEquals("alterado",  atualizado.getAddress());
+    }
+
+    @Test
     void testDelete() {
         Person person = mockPerson.mockEntity(1);
         when(repository.findById(1L)).thenReturn(Optional.of(person));
@@ -101,7 +123,7 @@ public class PersonServicesTest {
 
         Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> service.create(null));
 
-        String expectedMessage = "Os dados da pessoa sao obrigatórios.";
+        String expectedMessage = "Os dados da pessoa são obrigatórios.";
         String actualMessage = exception.getMessage();
 
         assertEquals(expectedMessage, actualMessage);

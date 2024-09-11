@@ -1,5 +1,6 @@
 package com.curso.erudio.rest_spring_aws.exceptions.handlers;
 
+import com.curso.erudio.rest_spring_aws.exceptions.BusinessException;
 import com.curso.erudio.rest_spring_aws.exceptions.ExceptionResponse;
 import com.curso.erudio.rest_spring_aws.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,16 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
                 request.getDescription(false));
 
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public final ResponseEntity<ExceptionResponse> handleBusinessExceptions(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
 }

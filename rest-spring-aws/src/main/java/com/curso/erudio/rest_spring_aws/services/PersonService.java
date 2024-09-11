@@ -1,6 +1,7 @@
 package com.curso.erudio.rest_spring_aws.services;
 
 import com.curso.erudio.rest_spring_aws.data.vo.v1.PersonVO;
+import com.curso.erudio.rest_spring_aws.exceptions.BusinessException;
 import com.curso.erudio.rest_spring_aws.exceptions.RequiredObjectIsNullException;
 import com.curso.erudio.rest_spring_aws.exceptions.ResourceNotFoundException;
 import com.curso.erudio.rest_spring_aws.mapper.Mapper;
@@ -45,6 +46,10 @@ public class PersonService {
 
         if (person == null)
             throw new RequiredObjectIsNullException("Os dados da pessoa sao obrigatórios.");
+
+        //Regra de negócio: Mafagafos não são aceitos
+        if ("Mafagafo".equalsIgnoreCase(person.getFirstName().trim()))
+            throw new BusinessException("Mafagafos não são aceitos.");
 
         return Mapper.parseObject(
                 repository.save(

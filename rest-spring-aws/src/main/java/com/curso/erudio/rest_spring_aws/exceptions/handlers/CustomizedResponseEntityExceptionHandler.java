@@ -2,6 +2,7 @@ package com.curso.erudio.rest_spring_aws.exceptions.handlers;
 
 import com.curso.erudio.rest_spring_aws.exceptions.BusinessException;
 import com.curso.erudio.rest_spring_aws.exceptions.ExceptionResponse;
+import com.curso.erudio.rest_spring_aws.exceptions.InvalidJwtAuthenticationException;
 import com.curso.erudio.rest_spring_aws.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,16 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
                 request.getDescription(false));
 
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidJwtAuthenticationException.class)
+    public final ResponseEntity<ExceptionResponse> handleInvalidJwtAuthenticationExceptions(Exception ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.FORBIDDEN);
     }
 
 }

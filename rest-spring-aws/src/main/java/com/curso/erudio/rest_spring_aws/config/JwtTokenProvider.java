@@ -64,13 +64,15 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public boolean validateToken(String token) {
-        DecodedJWT decodedToken = decodedToken(token);
-        try {
+    public void validateToken(String token) {
+
+            DecodedJWT decodedToken = decodedToken(token);
+
+        /*try {
             return !decodedToken.getExpiresAt().before(new Date());
         } catch (Exception e) {
             throw new InvalidJwtAuthenticationException("Expired or invalid JWT token.");
-        }
+        }*/
     }
 
     private String getAccessToken(String username, List<String> roles, Date now, Date validity) {

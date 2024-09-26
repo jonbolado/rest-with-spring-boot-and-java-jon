@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
@@ -26,8 +27,8 @@ public class UserService implements UserDetailsService {
 
         logger.info("Loading user '" + username + "'.");
 
-        return userRepository
-                .findByUsername(username)
+        //return userRepository.findByUsername(username);
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not found."));
 
     }

@@ -36,7 +36,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
@@ -50,9 +50,9 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/signin",
-                                "/auth/refresh",
+                                "/auth/refresh/**",
                                 "/api-docs/**",
-                                "/swagger-ui.html**",
+                                "/swagger-ui/**",
                                 "/v3/api-docs/**")
                         .permitAll()
                         .requestMatchers("/api/**").authenticated()

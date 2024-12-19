@@ -1,5 +1,6 @@
 package com.curso.erudio.rest_spring_aws.config;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -22,12 +23,27 @@ public class JwtTokenFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest,
-                         ServletResponse servletResponse,
+    public void doFilter(ServletRequest request,
+                         ServletResponse response,
                          FilterChain filterChain) throws IOException, ServletException {
 
-        String token = tokenProvider.resolveToken((HttpServletRequest) servletRequest);
-        tokenProvider.validateToken(token);
+        String token = tokenProvider.resolveToken((HttpServletRequest) request);
+
+        if (token == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        try {
+            tokenProvider.validateToken(token);
+
+            Authentication auth = tokenProvider.getAuthentication(token);
+            if (auth != null) {
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
+        } catch (TokenExpiredException e) {
+
+        }
 
         /*if (token != null && tokenProvider.validateToken(token)) {
             Authentication auth = tokenProvider.getAuthentication(token);
@@ -36,8 +52,6 @@ public class JwtTokenFilter extends GenericFilterBean {
             }
         }*/
 
-
-        filterChain.doFilter(servletRequest, servletResponse);
-
+        filterChain.doFilter(request, response);
     }
 }

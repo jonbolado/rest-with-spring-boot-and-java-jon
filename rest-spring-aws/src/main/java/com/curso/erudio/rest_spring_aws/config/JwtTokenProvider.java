@@ -50,6 +50,19 @@ public class JwtTokenProvider {
         return new TokenVO(username, true, now, validity, accessToken, refreshToken);
     }
 
+    public TokenVO refreshToken(String refreshToken) {
+        if (refreshToken.contains("Bearer "))
+            refreshToken = refreshToken.substring("Bearer ".length());
+
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(refreshToken);
+
+        String username = decodedJWT.getSubject();
+        List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+
+        return createAccessToken(username, roles);
+    }
+
     public Authentication getAuthentication(String token) {
         DecodedJWT decodedJWT = decodedToken(token);
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(decodedJWT.getSubject());
@@ -66,8 +79,9 @@ public class JwtTokenProvider {
 
     public void validateToken(String token) {
 
-            DecodedJWT decodedToken = decodedToken(token);
+        DecodedJWT decodedToken = decodedToken(token);
 
+        // **** APARENTEMENTE, A VALIDADE DO TOKEN ESTÁ SENDO VALIDADA NO PROPRIO "decodedToken"
         /*try {
             return !decodedToken.getExpiresAt().before(new Date());
         } catch (Exception e) {
@@ -101,6 +115,7 @@ public class JwtTokenProvider {
 
     private DecodedJWT decodedToken(String token) {
         JWTVerifier verifier = JWT.require(algorithm).build();
+        //o metodo "verify" esta validando automaticamente a expiracao do token
         return verifier.verify(token);
     }
 
